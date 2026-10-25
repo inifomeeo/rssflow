@@ -14,7 +14,7 @@ type commands struct {
 func (c *commands) run(s *state, cmd command) error {
 	handler, ok := c.handlers[cmd.Name]
 	if !ok {
-		return fmt.Errorf("unknown command: %s", cmd.Name)
+		return fmt.Errorf("command not found: %s", cmd.Name)
 	}
 	return handler(s, cmd)
 }
