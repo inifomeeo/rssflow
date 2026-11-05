@@ -38,3 +38,23 @@ func handlerAddFeed(s *state, cmd command) error {
 	fmt.Printf("Feed created: %+v\n", feed)
 	return nil
 }
+
+func handlerListFeeds(s *state, cmd command) error {
+	if len(cmd.Arguments) != 0 {
+		return fmt.Errorf("no arguments are required")
+	}
+
+	feeds, err := s.db.GetFeeds(context.Background())
+	if err != nil {
+		return fmt.Errorf("feeds could not be retrieved: %w", err)
+	}
+
+	for _, feed := range feeds {
+		fmt.Printf("Name: %s\n", feed.Name)
+        fmt.Printf("URL: %s\n", feed.Url)
+        fmt.Printf("User: %s\n", feed.UserName)
+        fmt.Println("--------------------------------")
+	}
+
+	return nil
+}
