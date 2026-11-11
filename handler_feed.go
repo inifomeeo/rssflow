@@ -58,3 +58,40 @@ func handlerListFeeds(s *state, cmd command) error {
 
 	return nil
 }
+
+func handlerFollowFeed(s *state, cmd command) error {
+	// Get the current user from the database
+    user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+    if err != nil {
+        return fmt.Errorf("error getting current user: %w", err)
+    }
+
+	if len(cmd.Arguments) != 1 {
+		return fmt.Errorf("usage: %s <url>", cmd.Name)
+	}
+
+	url := cmd.Arguments[0]
+
+	feed, err := s.db.GetFeed(context.Background(), url)
+	if err != nil {
+		return fmt.Errorf("error getting feed: %w", err)
+	}
+
+	feedFollow, err := s.db.CreateFeedFollow(context.Background(), database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		FeedID:    feed.ID,
+	})
+	if err != nil {
+		return fmt.Errorf("error creating feed follow: %w", err)
+	}
+
+	fmt.Printf("%s is now following %s\n",
+        feedFollow.UserName,
+        feedFollow.FeedName,
+    )
+
+	return nil
+}
