@@ -95,3 +95,28 @@ func handlerFollowFeed(s *state, cmd command) error {
 
 	return nil
 }
+
+func handlerFollowing(s *state, cmd command) error {
+	// Get the current user from the database
+    user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+    if err != nil {
+        return fmt.Errorf("error getting current user: %w", err)
+    }
+
+	if len(cmd.Arguments) != 0 {
+		return fmt.Errorf("no arguments are required")
+	}
+
+	feedFollows, err := s.db.GetFeedsFollowsForUser(context.Background(), user.ID)
+	if err != nil {
+		return fmt.Errorf("error getting feed follows: %w", err)
+	}
+
+	fmt.Printf("%s is following:\n", user.Name)
+
+	for _, feedFollow := range feedFollows {
+		fmt.Printf("  - %s\n", feedFollow.FeedName)
+	}
+
+	return nil
+}
