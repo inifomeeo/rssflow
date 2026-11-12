@@ -9,13 +9,7 @@ import (
 	"github.com/inifomeeo/rssflow/internal/database"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
-	// Get the current user from the database
-    user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-    if err != nil {
-        return fmt.Errorf("error getting current user: %w", err)
-    }
-
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Arguments) != 2 {
 		return fmt.Errorf("usage: %s <name> <url>", cmd.Name)
 	}
@@ -72,13 +66,7 @@ func handlerListFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFollowFeed(s *state, cmd command) error {
-	// Get the current user from the database
-    user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-    if err != nil {
-        return fmt.Errorf("error getting current user: %w", err)
-    }
-
+func handlerFollowFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Arguments) != 1 {
 		return fmt.Errorf("usage: %s <url>", cmd.Name)
 	}
@@ -109,13 +97,7 @@ func handlerFollowFeed(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFollowing(s *state, cmd command) error {
-	// Get the current user from the database
-    user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-    if err != nil {
-        return fmt.Errorf("error getting current user: %w", err)
-    }
-
+func handlerFollowing(s *state, cmd command, user database.User) error {
 	if len(cmd.Arguments) != 0 {
 		return fmt.Errorf("no arguments are required")
 	}
